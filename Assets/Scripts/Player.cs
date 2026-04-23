@@ -24,12 +24,22 @@ public class Player : MonoBehaviour, IDamageable
     
     private void Update()
     {
+        //test
         if (Input.GetKeyDown(KeyCode.Space))
         {
             ActivateShield();
         }
     }
+    
+    #region Speed
+    private void ChangeSpeed()
+    {
+        
+    }
+    
+    #endregion
 
+    #region Shield
     private void ActivateShield()
     {
         //sets shield health and activates it
@@ -39,53 +49,68 @@ public class Player : MonoBehaviour, IDamageable
         //activates bar in ui
         onShieldActivated?.Invoke();
 
-        StartCoroutine(Shield());
+        StartCoroutine(Shield(shieldDuration));
     }
 
-    IEnumerator Shield()
+    IEnumerator Shield(float duration)
     {
-        //wait for the amount of time in shieldDuration until deactivating the shield
-        yield return new WaitForSeconds(shieldDuration);
-        shieldActive = false;
+        //wait for the amount of time in duration until deactivating the shield
+        yield return new WaitForSeconds(duration);
         
-        //shield bar in ui is deactivated
+        //deactivates shield
+        shieldActive = false;
         onShieldDeactivated?.Invoke();
     }
+    #endregion
 
     public void TakeDamage(float damage)
     {
+        //if shield is active, then takes damage on shield, if not then on health
         if (shieldActive)
         {
+            //take damage on shield
             currentShield -= damage;
 
+            //if shield is completely depleted
             if (currentShield <= 0f)
             {
+                //deactivates shield
                 shieldActive = false;
                 onShieldDeactivated?.Invoke();
             }
             else
             {
-                onShieldDamageTaken?.Invoke(currentShield);
+                //calculates fill amount for shield bar
+                float shieldFill = currentShield / maxShield;
+                
+                //then sends float value to change bar fill amount in ui
+                onShieldDamageTaken?.Invoke(shieldFill);
             }
         }
         else
         {
+            //take damage on health
             currentHealth -= damage;
 
             if (currentHealth <= 0f)
             {
-                //lose ability
-                //teleport to spawn
+                Despawn();
             }
             else
             {
-                onHealthDamageTaken?.Invoke(currentHealth);
+                //calculates fill amount for health bar
+                float healthFill = currentHealth / maxHealth;
+                
+                //then sends float value to change bar fill amount in ui
+                onHealthDamageTaken?.Invoke(healthFill);
             }
         }
     }
 
     public void Despawn()
     {
+        Debug.Log("Despawn");
+        //lose ability
         //teleport to spawn
     }
 }

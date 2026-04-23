@@ -179,7 +179,7 @@
             "id": "860e2806-0e6d-4b11-933b-77a4a8df6d66",
             "actions": [
                 {
-                    "name": "Unpause",
+                    "name": "Resume",
                     "type": "Button",
                     "id": "73adeba7-0e99-4fdb-a9c4-34d11729b7e1",
                     "expectedControlType": "",
@@ -196,7 +196,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Unpause",
+                    "action": "Resume",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

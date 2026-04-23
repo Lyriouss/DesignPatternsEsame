@@ -14,6 +14,7 @@ public class StatsManager : MonoBehaviour
     [SerializeField] private float playerShield;
     [SerializeField] private float shieldDuration;
     [SerializeField] private float playerSpeed;
+    [SerializeField] private float speedBoostDuration;
     [SerializeField] private float playerDamage;
     [SerializeField] private float playerRange;
 
@@ -32,6 +33,7 @@ public class StatsManager : MonoBehaviour
         
         //player stats
         PlayerMovement.speed = playerSpeed;
+        PlayerMovement.speedBoostDuration = speedBoostDuration;
         Player.maxHealth = playerHealth;
         Player.maxShield = playerShield;
         Player.shieldDuration = shieldDuration;

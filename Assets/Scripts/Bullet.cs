@@ -47,6 +47,12 @@ public class Bullet : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            //gets component of Player interface
+            other.TryGetComponent(out IDamageable pDamageable);
+
+            //player takes damage
+            pDamageable.TakeDamage(damage);
+            
             //deactivates bullet colliding with player
             gameObject.SetActive(false);
         }

@@ -164,14 +164,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StatsManager
   enemyHealth: 0
-  bulletDamage: 0
+  bulletDamage: 2
   bulletSpeed: 20
   enemyRange: 10
   enemyFireRate: 1
-  playerHealth: 0
-  playerShield: 0
-  shieldDuration: 5
+  playerHealth: 10
+  playerShield: 5
+  shieldDuration: 10
   playerSpeed: 20
+  speedBoostDuration: 0
   playerDamage: 0
   playerRange: 0
 --- !u!1 &103094704
@@ -1825,6 +1826,7 @@ GameObject:
   - component: {fileID: 715659218}
   - component: {fileID: 715659219}
   - component: {fileID: 715659217}
+  - component: {fileID: 715659220}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -1979,6 +1981,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7bb32ea77c632644898c2a317099b465, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
+--- !u!114 &715659220
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 715659212}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c99fb13149f5cb547abd3681ab610a5b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AbilityUser
+  speedCooldown: 5
+  shieldCooldown: 5
+  healthCooldown: 5
+  damageCooldown: 5
 --- !u!1 &808688194
 GameObject:
   m_ObjectHideFlags: 0
@@ -3109,6 +3127,7 @@ MonoBehaviour:
   - {fileID: 1071770392}
   - {fileID: 1383875257}
   - {fileID: 1265464384}
+  pauseMenu: {fileID: 705991244}
 --- !u!1 &1329715292
 GameObject:
   m_ObjectHideFlags: 0
@@ -4758,7 +4777,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8634384653632112796, guid: 62e6f66961a0b1542a6506984b6810a6, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 9.4
+      value: 14.32
       objectReference: {fileID: 0}
     - target: {fileID: 8634384653632112796, guid: 62e6f66961a0b1542a6506984b6810a6, type: 3}
       propertyPath: m_LocalRotation.w

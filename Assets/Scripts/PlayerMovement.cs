@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -5,6 +7,8 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody rb;
     
     public static float speed;
+    public static float speedBoostDuration;
+    private bool speedAbilityActive = false;
 
     private void Awake()
     {
@@ -12,14 +16,30 @@ public class PlayerMovement : MonoBehaviour
         rb = GetComponent<Rigidbody>();
     }
 
+    private void OnEnable()
+    {
+        SpeedAbility.onSpeedAbilityTriggered += ChangeSpeed;
+    }
+
+    private void OnDisable()
+    {
+        SpeedAbility.onSpeedAbilityTriggered -= ChangeSpeed;
+    }
+    
     private void FixedUpdate()
     {
         //gets player movement value from InputManager inputMap
         Vector2 movementValue = InputManager.Instance.inputMap.Player.Movement.ReadValue<Vector2>();
         //corrects Vector2 to Vector3 movement
         Vector3 movementCorrection = new Vector3(movementValue.x, 0f, movementValue.y).normalized;
-        //calculates movement
-        Vector3 movement = movementCorrection * speed * Time.fixedDeltaTime;
+        Vector3 movement;
+        
+        if (speedAbilityActive)
+            //calculates movement with double speed
+            movement = movementCorrection * speed * 2 * Time.fixedDeltaTime;
+        else
+            //calculates movement normally
+            movement = movementCorrection * speed * Time.fixedDeltaTime;
 
         //moves player
         rb.MovePosition(rb.position + movement);
@@ -34,4 +54,20 @@ public class PlayerMovement : MonoBehaviour
             rb.MoveRotation(Quaternion.RotateTowards(rb.rotation, lookRotation, 20f));
         }
     }
+    
+    #region Speed
+    private void ChangeSpeed()
+    {
+        speedAbilityActive = true;
+
+        Speed(speedBoostDuration);
+    }
+
+    IEnumerator Speed(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+
+        speedAbilityActive = false;
+    }
+    #endregion
 }

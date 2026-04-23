@@ -265,7 +265,7 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
             ""id"": ""860e2806-0e6d-4b11-933b-77a4a8df6d66"",
             ""actions"": [
                 {
-                    ""name"": ""Unpause"",
+                    ""name"": ""Resume"",
                     ""type"": ""Button"",
                     ""id"": ""73adeba7-0e99-4fdb-a9c4-34d11729b7e1"",
                     ""expectedControlType"": """",
@@ -282,7 +282,7 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Unpause"",
+                    ""action"": ""Resume"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -329,7 +329,7 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
         m_Player_Pause = m_Player.FindAction("Pause", throwIfNotFound: true);
         // Pause
         m_Pause = asset.FindActionMap("Pause", throwIfNotFound: true);
-        m_Pause_Unpause = m_Pause.FindAction("Unpause", throwIfNotFound: true);
+        m_Pause_Resume = m_Pause.FindAction("Resume", throwIfNotFound: true);
         // GameEnd
         m_GameEnd = asset.FindActionMap("GameEnd", throwIfNotFound: true);
         m_GameEnd_Restart = m_GameEnd.FindAction("Restart", throwIfNotFound: true);
@@ -566,7 +566,7 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
     // Pause
     private readonly InputActionMap m_Pause;
     private List<IPauseActions> m_PauseActionsCallbackInterfaces = new List<IPauseActions>();
-    private readonly InputAction m_Pause_Unpause;
+    private readonly InputAction m_Pause_Resume;
     /// <summary>
     /// Provides access to input actions defined in input action map "Pause".
     /// </summary>
@@ -579,9 +579,9 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
         /// </summary>
         public PauseActions(@InputMap wrapper) { m_Wrapper = wrapper; }
         /// <summary>
-        /// Provides access to the underlying input action "Pause/Unpause".
+        /// Provides access to the underlying input action "Pause/Resume".
         /// </summary>
-        public InputAction @Unpause => m_Wrapper.m_Pause_Unpause;
+        public InputAction @Resume => m_Wrapper.m_Pause_Resume;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -608,9 +608,9 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
         {
             if (instance == null || m_Wrapper.m_PauseActionsCallbackInterfaces.Contains(instance)) return;
             m_Wrapper.m_PauseActionsCallbackInterfaces.Add(instance);
-            @Unpause.started += instance.OnUnpause;
-            @Unpause.performed += instance.OnUnpause;
-            @Unpause.canceled += instance.OnUnpause;
+            @Resume.started += instance.OnResume;
+            @Resume.performed += instance.OnResume;
+            @Resume.canceled += instance.OnResume;
         }
 
         /// <summary>
@@ -622,9 +622,9 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
         /// <seealso cref="PauseActions" />
         private void UnregisterCallbacks(IPauseActions instance)
         {
-            @Unpause.started -= instance.OnUnpause;
-            @Unpause.performed -= instance.OnUnpause;
-            @Unpause.canceled -= instance.OnUnpause;
+            @Resume.started -= instance.OnResume;
+            @Resume.performed -= instance.OnResume;
+            @Resume.canceled -= instance.OnResume;
         }
 
         /// <summary>
@@ -812,12 +812,12 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
     public interface IPauseActions
     {
         /// <summary>
-        /// Method invoked when associated input action "Unpause" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "Resume" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnUnpause(InputAction.CallbackContext context);
+        void OnResume(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "GameEnd" which allows adding and removing callbacks.
