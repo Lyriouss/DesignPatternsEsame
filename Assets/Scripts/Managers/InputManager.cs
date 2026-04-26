@@ -1,5 +1,7 @@
 using UnityEngine;
 
+//executes this class first on runtime
+[DefaultExecutionOrder(-100)]
 //when using InputActions, uses singleton to access inputMap so multiple objects don't create an inputMap variable
 public class InputManager : MonoBehaviour
 {

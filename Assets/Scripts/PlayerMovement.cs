@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 
@@ -7,23 +6,24 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody rb;
     
     public static float speed;
-    public static float speedBoostDuration;
     private bool speedAbilityActive = false;
 
     private void Awake()
     {
-        //assigns Rigidbody component of player to rb
         rb = GetComponent<Rigidbody>();
     }
 
     private void OnEnable()
     {
+        //speed ability events
         SpeedAbility.onSpeedAbilityTriggered += ChangeSpeed;
+        SpeedAbility.onSpeedAbilityRemoved += RevertSpeed;
     }
 
     private void OnDisable()
     {
         SpeedAbility.onSpeedAbilityTriggered -= ChangeSpeed;
+        SpeedAbility.onSpeedAbilityRemoved -= RevertSpeed;
     }
     
     private void FixedUpdate()
@@ -34,11 +34,12 @@ public class PlayerMovement : MonoBehaviour
         Vector3 movementCorrection = new Vector3(movementValue.x, 0f, movementValue.y).normalized;
         Vector3 movement;
         
+        //if speed ability is active
         if (speedAbilityActive)
             //calculates movement with double speed
             movement = movementCorrection * speed * 2 * Time.fixedDeltaTime;
         else
-            //calculates movement normally
+            //else calculates movement normally
             movement = movementCorrection * speed * Time.fixedDeltaTime;
 
         //moves player
@@ -58,15 +59,13 @@ public class PlayerMovement : MonoBehaviour
     #region Speed
     private void ChangeSpeed()
     {
+        //activates speed boost
         speedAbilityActive = true;
-
-        Speed(speedBoostDuration);
     }
 
-    IEnumerator Speed(float duration)
+    private void RevertSpeed()
     {
-        yield return new WaitForSeconds(duration);
-
+        //removes speed boost
         speedAbilityActive = false;
     }
     #endregion

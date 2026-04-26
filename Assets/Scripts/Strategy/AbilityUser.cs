@@ -1,153 +1,216 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public enum AbilityType 
-{
-    Speed,
-    Shield,
-    Health,
-    Damage
-}
-
 public class AbilityUser : MonoBehaviour
 {
     private IAbility ability;
-    private AbilityType abilityType;
     
-    [SerializeField] private float speedCooldown;
-    [SerializeField] private float shieldCooldown;
-    [SerializeField] private float healthCooldown;
-    [SerializeField] private float damageCooldown;
-    private bool speedOnCooldown = false;
-    private bool shieldOnCooldown = false;
-    private bool healthOnCooldown = false;
-    private bool damageOnCooldown = false;
-
+    public static float speedDuration;
+    public static float speedCooldown;
+    public static float shieldDuration;
+    public static float shieldCooldown;
+    public static float healthCooldown;
+    public static float damageDuration;
+    public static float damageCooldown;
+    private bool speedActive = false;
+    private bool shieldActive = false;
+    private bool healthActive = false;
+    private bool damageActive = false;
+    private bool shieldCollected = false;
+    private bool healthCollected = false;
+    private bool damageCollected = false;
+    
+    public static event Action onShieldCollected, onHealthCollected, onDamageCollected;
+    public static event Action<IAbility> onAbilityUsed;
+    public static event Action<IAbility> onAbilityUsable;
+    
     private void OnEnable()
     {
-        InputManager.Instance.inputMap.Player.SpeedAbility.performed += TriggerSpeed;
-        InputManager.Instance.inputMap.Player.ShieldAbility.performed += TriggerShield;
-        InputManager.Instance.inputMap.Player.HealthAbility.performed += TriggerHealth;
-        InputManager.Instance.inputMap.Player.DamageAbility.performed += TriggerDamage;
+        //ability inputs that are Alpha1, Alpha2, Alpha3, and Alpha4 respectively
+        InputManager.Instance.inputMap.Player.SpeedAbility.performed += SpeedInput;
+        InputManager.Instance.inputMap.Player.ShieldAbility.performed += ShieldInput;
+        InputManager.Instance.inputMap.Player.HealthAbility.performed += HealthInput;
+        InputManager.Instance.inputMap.Player.DamageAbility.performed += DamageInput;
+        
+        //ability collection events
+        AbilityPickup.onShieldCollected += CollectShield;
+        AbilityPickup.onHealthCollected += CollectHealth;
+        AbilityPickup.onDamageCollected += CollectDamage;
     }
 
     private void OnDisable()
     {
-        InputManager.Instance.inputMap.Player.SpeedAbility.performed -= TriggerSpeed;
-        InputManager.Instance.inputMap.Player.ShieldAbility.performed -= TriggerShield;
-        InputManager.Instance.inputMap.Player.HealthAbility.performed -= TriggerHealth;
-        InputManager.Instance.inputMap.Player.DamageAbility.performed -= TriggerDamage;
+        InputManager.Instance.inputMap.Player.SpeedAbility.performed -= SpeedInput;
+        InputManager.Instance.inputMap.Player.ShieldAbility.performed -= ShieldInput;
+        InputManager.Instance.inputMap.Player.HealthAbility.performed -= HealthInput;
+        InputManager.Instance.inputMap.Player.DamageAbility.performed -= DamageInput;
     }
 
-    private void TriggerSpeed(InputAction.CallbackContext context)
+    private void SpeedInput(InputAction.CallbackContext context)
     {
-        //if ability is on cooldown, does not execute ability
-        if (speedOnCooldown)
+        UseSpeed();
+    }
+
+    public void UseSpeed()
+    {
+        //if ability is active, does not execute ability
+        if (speedActive)
             return;
         
         //assign speed ability script to interface variable
         ability = new SpeedAbility();
-        //executes speed ability
-        ability.UseAbility();
-        //unassign script from interface
-        ability = null;
 
-        //sets cooldown bool to true to not execute function when on cooldown
-        speedOnCooldown = true;
-        //sets enum to ability type so coroutine knows which ability to turn off cooldown
-        abilityType = AbilityType.Speed;
+        //sets bool to true so that ability doesn't run when active
+        speedActive = true;
+        
+        //makes speed button non interactable
+        onAbilityUsed?.Invoke(ability);
 
         //set ability on cooldown
-        AbilityCooldown(speedCooldown, abilityType);
+        StartCoroutine(AbilityProcess(ability));
     }
     
-    private void TriggerShield(InputAction.CallbackContext context)
+    private void ShieldInput(InputAction.CallbackContext context)
     {
-        //if ability is on cooldown, does not execute ability
-        if (shieldOnCooldown)
+        UseShield();
+    }
+
+    public void UseShield()
+    {
+        //if ability is on cooldown or hasn't been collected yet, does not execute ability
+        if (shieldActive || !shieldCollected)
             return;
         
         //assign shield ability script to interface variable
         ability = new ShieldAbility();
-        //executes shield ability
-        ability.UseAbility();
-        //unassign script from interface
-        ability = null;
 
-        //sets cooldown bool to true to not execute function when on cooldown
-        shieldOnCooldown = true;
-        //sets enum to ability type so coroutine knows which ability to turn off cooldown
-        abilityType = AbilityType.Shield;
+        //sets bool to true so that ability doesn't run when active
+        shieldActive = true;
+        
+        //makes shield button non interactable
+        onAbilityUsed?.Invoke(ability);
 
         //set ability on cooldown
-        AbilityCooldown(shieldCooldown, abilityType);
+        StartCoroutine(AbilityProcess(ability));
     }
 
-    private void TriggerHealth(InputAction.CallbackContext context)
+    private void CollectShield()
     {
-        //if ability is on cooldown, does not execute ability
-        if (healthOnCooldown)
+        shieldCollected = true;
+        onShieldCollected?.Invoke();
+    }
+
+    private void HealthInput(InputAction.CallbackContext context)
+    {
+        UseHealth();
+    }
+
+    public void UseHealth()
+    {
+        //if ability is on cooldown or hasn't been collected yet, does not execute ability
+        if (healthActive || !healthCollected)
             return;
         
         //assign health ability script to interface variable
         ability = new HealthAbility();
-        //executes health ability
-        ability.UseAbility();
-        //unassign script from interface
-        ability = null;
 
-        //sets cooldown bool to true to not execute function when on cooldown
-        healthOnCooldown = true;
-        //sets enum to ability type so coroutine knows which ability to turn off cooldown
-        abilityType = AbilityType.Health;
+        //sets bool to true so that ability doesn't run when active
+        healthActive = true;
+        
+        //makes health button non interactable
+        onAbilityUsed?.Invoke(ability);
 
         //set ability on cooldown
-        AbilityCooldown(healthCooldown, abilityType);
+        StartCoroutine(AbilityProcess(ability));
     }
 
-    private void TriggerDamage(InputAction.CallbackContext context)
+    private void CollectHealth()
     {
-        //if ability is on cooldown, does not execute ability
-        if (damageOnCooldown)
+        healthCollected = true;
+        onHealthCollected?.Invoke();
+    }
+
+    private void DamageInput(InputAction.CallbackContext context)
+    {
+        UseDamage();
+    }
+
+    public void UseDamage()
+    {
+        //if ability is on cooldown or hasn't been collected yet, does not execute ability
+        if (damageActive || !damageCollected)
             return;
         
         //assign damage ability script to interface variable
         ability = new DamageAbility();
-        //executes damage ability
-        ability.UseAbility();
-        //unassign script from interface
-        ability = null;
 
-        //sets cooldown bool to true to not execute function when on cooldown
-        damageOnCooldown = true;
-        //sets enum to ability type so coroutine knows which ability to turn off cooldown
-        abilityType = AbilityType.Damage;
+        //sets bool to true so that ability doesn't run when active
+        damageActive = true;
+        
+        //makes damage button non interactable
+        onAbilityUsed?.Invoke(ability);
 
         //set ability on cooldown
-        AbilityCooldown(damageCooldown, abilityType);
+        StartCoroutine(AbilityProcess(ability));
     }
 
-    IEnumerator AbilityCooldown(float cooldown, AbilityType type)
+    private void CollectDamage()
     {
-        yield return new WaitForSeconds(cooldown);
+        damageCollected = true;
+        onDamageCollected?.Invoke();
+    }
 
+    IEnumerator AbilityProcess(IAbility type)
+    {
+        //uses current ability
+        type.UseAbility();
+        
         switch (type)
         {
-            case AbilityType.Speed:
-                speedOnCooldown = false;
+            case SpeedAbility:
+                //waits for speed ability to end
+                yield return new WaitForSeconds(speedDuration);
+                //removes speed ability
+                type.RemoveAbility();
+                //waits for speed cooldown to end
+                yield return new WaitForSeconds(speedCooldown);
+                //allows speed ability to be used again
+                speedActive = false;
+                onAbilityUsable?.Invoke(type);
                 break;
             
-            case AbilityType.Shield:
-                shieldOnCooldown = false;
+            case ShieldAbility:
+                //waits for shield ability to end
+                yield return new WaitForSeconds(shieldDuration);
+                //removes shield ability
+                type.RemoveAbility();
+                //waits for shield cooldown to end
+                yield return new WaitForSeconds(shieldCooldown);
+                //allows shield ability to be used again
+                shieldActive = false;
+                onAbilityUsable?.Invoke(type);
                 break;
             
-            case AbilityType.Health:
-                healthOnCooldown = false;
+            case HealthAbility:
+                //waits for health cooldown to end
+                yield return new WaitForSeconds(healthCooldown);
+                //allows health ability to be used again
+                healthActive = false;
+                onAbilityUsable?.Invoke(type);
                 break;
             
-            case AbilityType.Damage:
-                damageOnCooldown = false;
+            case DamageAbility:
+                //waits for damage ability to end
+                yield return new WaitForSeconds(damageDuration);
+                //removes damage ability
+                type.RemoveAbility();
+                //waits for damage cooldown to end
+                yield return new WaitForSeconds(damageCooldown);
+                //allows damage ability to be used again
+                damageActive = false;
+                onAbilityUsable?.Invoke(type);
                 break;
         }
     }

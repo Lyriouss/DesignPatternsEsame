@@ -1,17 +1,24 @@
 using UnityEngine;
 
-public class Enemy : MonoBehaviour
+public class Enemy : MonoBehaviour, IDamageable
 {
     [SerializeField] private PooledBullets pooledBullets;
     [SerializeField] private LayerMask playerMask;
     
-    public static float health;
+    public static float enemyMaxHealth;
+    private float currentHealth;
     public static float range;
     public static float fireRate;
     
     private float timer;
 
     private Transform currentTarget;
+
+    private void Start()
+    {
+        //sets enemy health to max
+        currentHealth = enemyMaxHealth;
+    }
 
     private void Update()
     {
@@ -71,5 +78,21 @@ public class Enemy : MonoBehaviour
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, range);
+    }
+
+    public void TakeDamage(float damage)
+    {
+        //enemy takes damage
+        currentHealth -= damage;
+        
+        //when enemy health reaches zero
+        if (currentHealth <= 0f)
+            Despawn();
+    }
+
+    public void Despawn()
+    {
+        //deactivates enemy game object
+        gameObject.SetActive(false);
     }
 }

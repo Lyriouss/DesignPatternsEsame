@@ -8,4 +8,9 @@ public class HealthAbility : IAbility
     {
         onHealthAbilityTriggered?.Invoke();
     }
+
+    public void RemoveAbility()
+    {
+        
+    }
 }
