@@ -10,6 +10,7 @@ public class UiManager : MonoBehaviour
     [SerializeField] private Button[] abilities;
 
     [SerializeField] private GameObject pauseMenu;
+    [SerializeField] private GameObject gameEndMenu;
     
     private void OnEnable()
     {
@@ -17,9 +18,7 @@ public class UiManager : MonoBehaviour
         Player.onShieldDeactivated += HideShieldBar;
         Player.onPlayerHealed += UpdateHealthBar;
 
-        AbilityUser.onShieldCollected += ShowShieldButton;
-        AbilityUser.onHealthCollected += ShowHealthButton;
-        AbilityUser.onDamageCollected += ShowDamageButton;
+        ChangeStatusCommand.onAbilityChanged += ChangeAbilityButton;
         AbilityUser.onAbilityUsed += DisableAbilityButton;
         AbilityUser.onAbilityUsable += EnableAbilityButton;
         
@@ -28,6 +27,8 @@ public class UiManager : MonoBehaviour
 
         GameManager.onGamePaused += ShowPauseMenu;
         GameManager.onGameResumed += HidePauseMenu;
+        
+        GameManager.onGameEnded += ShowGameEndMenu;
     }
 
     private void OnDisable()
@@ -36,9 +37,7 @@ public class UiManager : MonoBehaviour
         Player.onShieldDeactivated -= HideShieldBar;
         Player.onPlayerHealed -= UpdateHealthBar;
         
-        AbilityUser.onShieldCollected -= ShowShieldButton;
-        AbilityUser.onHealthCollected -= ShowHealthButton;
-        AbilityUser.onDamageCollected -= ShowDamageButton;
+        ChangeStatusCommand.onAbilityChanged -= ChangeAbilityButton;
         AbilityUser.onAbilityUsed -= DisableAbilityButton;
         AbilityUser.onAbilityUsable -= EnableAbilityButton;
         
@@ -47,6 +46,8 @@ public class UiManager : MonoBehaviour
         
         GameManager.onGamePaused -= ShowPauseMenu;
         GameManager.onGameResumed -= HidePauseMenu;
+
+        GameManager.onGameEnded -= ShowGameEndMenu;
     }
 
     private void Start()
@@ -57,6 +58,10 @@ public class UiManager : MonoBehaviour
             abi.gameObject.SetActive(false);
         }
         abilities[0].gameObject.SetActive(true);
+        
+        //deactivates paase and game end menus
+        pauseMenu.SetActive(false);
+        gameEndMenu.SetActive(false);
     }
 
     private void ShowShieldBar()
@@ -65,22 +70,25 @@ public class UiManager : MonoBehaviour
         shield.SetActive(true);
     }
 
-    private void ShowShieldButton()
+    private void ChangeAbilityButton(bool status, AbilityType ability)
     {
-        if (abilities.Length >= 2)
-            abilities[1].gameObject.SetActive(true);
-    }
-
-    private void ShowHealthButton()
-    {
-        if (abilities.Length >= 3)
-            abilities[2].gameObject.SetActive(true);
-    }
-
-    private void ShowDamageButton()
-    {
-        if (abilities.Length >= 4)
-            abilities[3].gameObject.SetActive(true);
+        switch (ability)
+        {
+            case AbilityType.Shield:
+                if (abilities.Length >= 2)
+                    abilities[1].gameObject.SetActive(status);
+                break;
+            
+            case AbilityType.Health:
+                if (abilities.Length >= 3)
+                    abilities[2].gameObject.SetActive(status);
+                break;
+            
+            case AbilityType.Damage:
+                if (abilities.Length >= 4)
+                    abilities[3].gameObject.SetActive(status);
+                break;
+        }
     }
 
     private void DisableAbilityButton(IAbility ability)
@@ -145,4 +153,6 @@ public class UiManager : MonoBehaviour
     private void ShowPauseMenu() => pauseMenu.SetActive(true);
     
     private void HidePauseMenu() => pauseMenu.SetActive(false);
+
+    private void ShowGameEndMenu() => gameEndMenu.SetActive(true);
 }

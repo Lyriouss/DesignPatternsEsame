@@ -1,9 +1,11 @@
+using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class Enemy : MonoBehaviour, IDamageable
 {
-    [SerializeField] private PooledBullets pooledBullets;
     [SerializeField] private LayerMask playerMask;
+    private PoolManager poolManager;
     
     public static float enemyMaxHealth;
     private float currentHealth;
@@ -13,6 +15,13 @@ public class Enemy : MonoBehaviour, IDamageable
     private float timer;
 
     private Transform currentTarget;
+
+    public static event Action onEnemyKilled;
+
+    private void Awake()
+    {
+        poolManager = FindObjectOfType<PoolManager>();
+    }
 
     private void Start()
     {
@@ -68,7 +77,7 @@ public class Enemy : MonoBehaviour, IDamageable
         if (timer >= fireRate)
         {
             //uses object pooler to spawn bullets
-            pooledBullets.GetBullet(transform.position, transform.rotation);
+            poolManager.GetBullet(transform.position, transform.rotation);
             //sets timer back to zero
             timer = 0f;
         }
@@ -92,6 +101,9 @@ public class Enemy : MonoBehaviour, IDamageable
 
     public void Despawn()
     {
+        //updates enemies defeated tally count
+        onEnemyKilled?.Invoke();
+        
         //deactivates enemy game object
         gameObject.SetActive(false);
     }

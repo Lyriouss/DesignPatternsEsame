@@ -1185,7 +1185,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 551713258}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1662872351}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
+        m_MethodName: ReloadScene
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &551713258
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1736,7 +1748,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: RESUME
+  m_text: RESTART
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2357,6 +2369,7 @@ Transform:
   - {fileID: 810746558}
   - {fileID: 167281445}
   - {fileID: 1030520162}
+  - {fileID: 1797731181}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &917306664
@@ -3374,6 +3387,7 @@ MonoBehaviour:
   - {fileID: 1383875257}
   - {fileID: 1265464384}
   pauseMenu: {fileID: 705991244}
+  gameEndMenu: {fileID: 2095037281}
 --- !u!1 &1329715292
 GameObject:
   m_ObjectHideFlags: 0
@@ -4054,6 +4068,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42d22e39cabb6ba4195dabad4605208f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
+  enemyPrefab: {fileID: 8327015903259021230, guid: 62e6f66961a0b1542a6506984b6810a6, type: 3}
+  enemySpawnAmount: 3
 --- !u!1 &1722482643
 GameObject:
   m_ObjectHideFlags: 0
@@ -4458,6 +4474,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1792249546}
   m_CullTransparentMesh: 1
+--- !u!1 &1797731180
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1797731181}
+  - component: {fileID: 1797731182}
+  m_Layer: 0
+  m_Name: CommandManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1797731181
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1797731180}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 891725330}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1797731182
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1797731180}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9cd21037653ae84da6660dc762cbb5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CommandManager
 --- !u!1 &1800811586
 GameObject:
   m_ObjectHideFlags: 0
@@ -5043,7 +5103,7 @@ GameObject:
   - component: {fileID: 2095037284}
   - component: {fileID: 2095037283}
   m_Layer: 5
-  m_Name: RestartMenu
+  m_Name: GameEndMenu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5518,12 +5578,20 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 5037680322946739535, guid: 62e6f66961a0b1542a6506984b6810a6, type: 3}
+      propertyPath: poolManager
+      value: 
+      objectReference: {fileID: 1030520163}
+    - target: {fileID: 5037680322946739535, guid: 62e6f66961a0b1542a6506984b6810a6, type: 3}
       propertyPath: pooledBullets
       value: 
       objectReference: {fileID: 1030520163}
     - target: {fileID: 8327015903259021230, guid: 62e6f66961a0b1542a6506984b6810a6, type: 3}
       propertyPath: m_Name
       value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 8327015903259021230, guid: 62e6f66961a0b1542a6506984b6810a6, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8634384653632112796, guid: 62e6f66961a0b1542a6506984b6810a6, type: 3}
       propertyPath: m_LocalPosition.x

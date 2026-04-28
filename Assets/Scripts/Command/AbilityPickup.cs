@@ -16,22 +16,7 @@ public class AbilityPickup : MonoBehaviour, ICollectible
     
     public void Collect()
     {
-        switch (abilityType)
-        {
-            case AbilityType.Shield:
-                onShieldCollected?.Invoke();
-                break;
-            
-            case AbilityType.Health:
-                onHealthCollected?.Invoke();
-                break;
-            
-            case AbilityType.Damage:
-                onDamageCollected?.Invoke();
-                break;
-        }
-
-        gameObject.SetActive(false);
+        new ChangeStatusCommand(gameObject, abilityType);
     }
 
     private void OnTriggerEnter(Collider other)

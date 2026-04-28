@@ -2,9 +2,11 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.PlayerLoop;
 
 public class AbilityUser : MonoBehaviour
 {
+    public static AbilityUser Instance;
     private IAbility ability;
     
     public static float speedDuration;
@@ -22,9 +24,18 @@ public class AbilityUser : MonoBehaviour
     private bool healthCollected = false;
     private bool damageCollected = false;
     
-    public static event Action onShieldCollected, onHealthCollected, onDamageCollected;
     public static event Action<IAbility> onAbilityUsed;
     public static event Action<IAbility> onAbilityUsable;
+
+    private void Awake()
+    {
+        if (Instance != null)
+        {
+            Destroy(Instance);
+            return;
+        }
+        Instance = this;
+    }
     
     private void OnEnable()
     {
@@ -33,11 +44,8 @@ public class AbilityUser : MonoBehaviour
         InputManager.Instance.inputMap.Player.ShieldAbility.performed += ShieldInput;
         InputManager.Instance.inputMap.Player.HealthAbility.performed += HealthInput;
         InputManager.Instance.inputMap.Player.DamageAbility.performed += DamageInput;
-        
-        //ability collection events
-        AbilityPickup.onShieldCollected += CollectShield;
-        AbilityPickup.onHealthCollected += CollectHealth;
-        AbilityPickup.onDamageCollected += CollectDamage;
+
+        ChangeStatusCommand.onAbilityChanged += ChangeAbilityStatus;
     }
 
     private void OnDisable()
@@ -46,6 +54,26 @@ public class AbilityUser : MonoBehaviour
         InputManager.Instance.inputMap.Player.ShieldAbility.performed -= ShieldInput;
         InputManager.Instance.inputMap.Player.HealthAbility.performed -= HealthInput;
         InputManager.Instance.inputMap.Player.DamageAbility.performed -= DamageInput;
+        
+        ChangeStatusCommand.onAbilityChanged -= ChangeAbilityStatus;
+    }
+
+    private void ChangeAbilityStatus(bool status, AbilityType ability)
+    {
+        switch (ability)
+        {
+            case AbilityType.Shield:
+                shieldCollected = status;
+                break;
+            
+            case AbilityType.Health:
+                healthCollected = status;
+                break;
+            
+            case AbilityType.Damage:
+                damageCollected = status;
+                break;
+        }
     }
 
     private void SpeedInput(InputAction.CallbackContext context)
@@ -96,12 +124,6 @@ public class AbilityUser : MonoBehaviour
         StartCoroutine(AbilityProcess(ability));
     }
 
-    private void CollectShield()
-    {
-        shieldCollected = true;
-        onShieldCollected?.Invoke();
-    }
-
     private void HealthInput(InputAction.CallbackContext context)
     {
         UseHealth();
@@ -126,12 +148,6 @@ public class AbilityUser : MonoBehaviour
         StartCoroutine(AbilityProcess(ability));
     }
 
-    private void CollectHealth()
-    {
-        healthCollected = true;
-        onHealthCollected?.Invoke();
-    }
-
     private void DamageInput(InputAction.CallbackContext context)
     {
         UseDamage();
@@ -154,12 +170,6 @@ public class AbilityUser : MonoBehaviour
 
         //set ability on cooldown
         StartCoroutine(AbilityProcess(ability));
-    }
-
-    private void CollectDamage()
-    {
-        damageCollected = true;
-        onDamageCollected?.Invoke();
     }
 
     IEnumerator AbilityProcess(IAbility type)

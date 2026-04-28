@@ -11,6 +11,7 @@ public class Player : MonoBehaviour, IDamageable
     public static float damage;
     public static float damageRange;
     private bool damageActive = false;
+    private Vector3 spawnPoint;
 
     [SerializeField] private LayerMask enemyMask;
     [SerializeField] private GameObject shieldObj;
@@ -47,6 +48,8 @@ public class Player : MonoBehaviour, IDamageable
     {
         //sets player health
         currentHealth = playerMaxHealth;
+        //sets spawn point for player
+        spawnPoint = transform.position;
         //deactivates shield and damage objects
         shieldObj.SetActive(false);
         damageObj.SetActive(false);
@@ -175,7 +178,12 @@ public class Player : MonoBehaviour, IDamageable
     {
         Debug.Log("Despawn");
         //lose ability
+        CommandManager.Instance.UndoCommand();
         //teleport to spawn
+        transform.position = spawnPoint;
+        //set health back to max
+        currentHealth = playerMaxHealth;
+        onPlayerHealed?.Invoke(1f);
     }
 
     private void OnDrawGizmos()
