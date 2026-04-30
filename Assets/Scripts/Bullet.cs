@@ -35,16 +35,16 @@ public class Bullet : MonoBehaviour
         //calculates distance from spawn point to current point
         float distance = Vector3.Distance(spawnPoint, transform.position);
 
-        //if the distance is greater than the range
+        //if the distance is greater than the range, deactivates bullet
         if (distance >= range)
         {
-            //deactivate bullet
             gameObject.SetActive(false);
         } 
     }
 
     private void OnTriggerEnter(Collider other)
     {
+        //runs only if object that triggers function has Player tag
         if (other.CompareTag("Player"))
         {
             //gets component of Player interface

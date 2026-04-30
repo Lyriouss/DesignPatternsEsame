@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.PlayerLoop;
 
 public class AbilityUser : MonoBehaviour
 {
@@ -44,7 +43,7 @@ public class AbilityUser : MonoBehaviour
         InputManager.Instance.inputMap.Player.ShieldAbility.performed += ShieldInput;
         InputManager.Instance.inputMap.Player.HealthAbility.performed += HealthInput;
         InputManager.Instance.inputMap.Player.DamageAbility.performed += DamageInput;
-
+        
         ChangeStatusCommand.onAbilityChanged += ChangeAbilityStatus;
     }
 
@@ -58,8 +57,10 @@ public class AbilityUser : MonoBehaviour
         ChangeStatusCommand.onAbilityChanged -= ChangeAbilityStatus;
     }
 
+    //event function when collecting an ability
     private void ChangeAbilityStatus(bool status, AbilityType ability)
     {
+        //based on the ability collected, allows said ability to be used
         switch (ability)
         {
             case AbilityType.Shield:
@@ -87,13 +88,12 @@ public class AbilityUser : MonoBehaviour
         if (speedActive)
             return;
         
-        //assign speed ability script to interface variable
-        ability = new SpeedAbility();
-
         //sets bool to true so that ability doesn't run when active
         speedActive = true;
-        
-        //makes speed button non interactable
+
+        //assign speed ability script to interface variable
+        ability = new SpeedAbility();
+        //makes speed button non interactable in UiManager
         onAbilityUsed?.Invoke(ability);
 
         //set ability on cooldown
@@ -111,13 +111,12 @@ public class AbilityUser : MonoBehaviour
         if (shieldActive || !shieldCollected)
             return;
         
-        //assign shield ability script to interface variable
-        ability = new ShieldAbility();
-
         //sets bool to true so that ability doesn't run when active
         shieldActive = true;
         
-        //makes shield button non interactable
+        //assign shield ability script to interface variable
+        ability = new ShieldAbility();
+        //makes shield button non interactable in UiManager
         onAbilityUsed?.Invoke(ability);
 
         //set ability on cooldown
@@ -135,15 +134,14 @@ public class AbilityUser : MonoBehaviour
         if (healthActive || !healthCollected)
             return;
         
-        //assign health ability script to interface variable
-        ability = new HealthAbility();
-
         //sets bool to true so that ability doesn't run when active
         healthActive = true;
         
-        //makes health button non interactable
+        //assign health ability script to interface variable
+        ability = new HealthAbility();
+        //makes health button non interactable in UiManager
         onAbilityUsed?.Invoke(ability);
-
+        
         //set ability on cooldown
         StartCoroutine(AbilityProcess(ability));
     }
@@ -159,12 +157,11 @@ public class AbilityUser : MonoBehaviour
         if (damageActive || !damageCollected)
             return;
         
-        //assign damage ability script to interface variable
-        ability = new DamageAbility();
-
         //sets bool to true so that ability doesn't run when active
         damageActive = true;
         
+        //assign damage ability script to interface variable
+        ability = new DamageAbility();
         //makes damage button non interactable
         onAbilityUsed?.Invoke(ability);
 

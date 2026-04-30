@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -32,7 +31,7 @@ public class PlayerMovement : MonoBehaviour
         Vector2 movementValue = InputManager.Instance.inputMap.Player.Movement.ReadValue<Vector2>();
         //corrects Vector2 to Vector3 movement
         Vector3 movementCorrection = new Vector3(movementValue.x, 0f, movementValue.y).normalized;
-        Vector3 movement;
+        Vector3 movement = Vector3.zero;
         
         //if speed ability is active
         if (speedAbilityActive)

@@ -20,6 +20,7 @@ public class Enemy : MonoBehaviour, IDamageable
 
     private void Awake()
     {
+        //goes through hierarchy to find object with PoolManager script
         poolManager = FindObjectOfType<PoolManager>();
     }
 
@@ -83,12 +84,6 @@ public class Enemy : MonoBehaviour, IDamageable
         }
     }
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, range);
-    }
-
     public void TakeDamage(float damage)
     {
         //enemy takes damage
@@ -106,5 +101,11 @@ public class Enemy : MonoBehaviour, IDamageable
         
         //deactivates enemy game object
         gameObject.SetActive(false);
+    }
+    
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, range);
     }
 }

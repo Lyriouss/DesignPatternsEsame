@@ -61,17 +61,23 @@ public class Player : MonoBehaviour, IDamageable
         if (!damageActive)
             return;
 
+        //runs an overlap sphere around player that detects enemy masks
         Collider[] colliders = Physics.OverlapSphere(transform.position, damageRange, enemyMask);
         
+        //skips rest of update if no colliders are detected
         if (colliders.Length == 0)
             return;
-
+        
+        //all enemies within overlap sphere take damage
         foreach (Collider enemy in colliders)
         {
+            //gets IDamageable interface from enemy
             enemy.TryGetComponent(out IDamageable eDamageable);
-
+            
+            //uses Time.deltaTIme so enemy takes the equivalent of damage every second
             float trueDamage = damage * Time.deltaTime;
-
+            
+            //enemy takes damage every instance of update
             eDamageable.TakeDamage(trueDamage);
         }
     }
@@ -159,6 +165,7 @@ public class Player : MonoBehaviour, IDamageable
             //take damage on health
             currentHealth -= damage;
 
+            //if health reaches zero, then runs despawn function, else updates health bar in ui
             if (currentHealth <= 0f)
             {
                 Despawn();
@@ -176,8 +183,7 @@ public class Player : MonoBehaviour, IDamageable
 
     public void Despawn()
     {
-        Debug.Log("Despawn");
-        //lose ability
+        //lose last ability collected
         CommandManager.Instance.UndoCommand();
         //teleport to spawn
         transform.position = spawnPoint;

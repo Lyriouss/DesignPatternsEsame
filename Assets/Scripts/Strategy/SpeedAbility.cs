@@ -1,5 +1,4 @@
 using System;
-using UnityEngine;
 
 public class SpeedAbility : IAbility
 {
@@ -7,11 +6,13 @@ public class SpeedAbility : IAbility
     
     public void UseAbility()
     {
+        //triggers event function in PlayerMovement class that activates ability
         onSpeedAbilityTriggered?.Invoke();
     }
 
     public void RemoveAbility()
     {
+        //triggers event function in PlayerMovement class that deactivates ability
         onSpeedAbilityRemoved?.Invoke();
     }
 }

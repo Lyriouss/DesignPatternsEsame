@@ -10,6 +10,7 @@ public class PoolManager : MonoBehaviour
 
     private void Awake()
     {
+        //creates List for all objects pooled (in this case bullets)
         poolPrefabs = new List<GameObject>();
     }
 
@@ -27,8 +28,7 @@ public class PoolManager : MonoBehaviour
             //checks if element in list is deactivated
             if (pool[i].activeInHierarchy == false)
             {
-                //if so
-                //changes position and rotation to given values
+                //if so, changes position and rotation to given values
                 pool[i].transform.position = position;
                 pool[i].transform.rotation = rotation;
                 //then reactivates bullet

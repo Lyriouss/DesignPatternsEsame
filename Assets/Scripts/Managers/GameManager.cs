@@ -13,7 +13,7 @@ public enum GameState
 public class GameManager : MonoBehaviour
 {
     private GameState gameState;
-
+    
     [SerializeField] private GameObject enemyPrefab;
     [SerializeField] private int enemySpawnAmount;
 
@@ -63,12 +63,15 @@ public class GameManager : MonoBehaviour
 
     private void SpawnEnemies(GameObject enemy, int spawnAmount)
     {
+        //spawns enemies equal to the amount specified through inspector's Spawn Amount
         for (int i = 0; i < spawnAmount; i++)
         {
+            //gets a random position
             Vector3 randomPos = GetRandomPos();
+            //spawns enemy
             Instantiate(enemy, randomPos, Quaternion.identity);
         }
-        
+        //returns a random position within arena
         Vector3 GetRandomPos()
         {
             return new Vector3(Random.Range(-25f, 25f), 1.5f, Random.Range(-25f, 25f));
@@ -113,20 +116,25 @@ public class GameManager : MonoBehaviour
 
     private void UpdateKillCount()
     {
+        //updates kill tally amount
         killCount++;
 
+        //checks if all enemies are defeated for game completion
         if (killCount >= enemySpawnAmount)
             GameCompleted();
     }
 
     private void GameCompleted()
     {
+        //pauses game
         gameState = GameState.Paused;
         Time.timeScale = 0f;
         
+        //enables only GameEnd input map
         InputManager.Instance.inputMap.Player.Disable();
         InputManager.Instance.inputMap.GameEnd.Enable();
 
+        //activates game end panel from UiManager
         onGameEnded?.Invoke();
     }
 
@@ -137,6 +145,7 @@ public class GameManager : MonoBehaviour
 
     public void ReloadScene()
     {
+        //reloads current scene
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }

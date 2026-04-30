@@ -13,7 +13,7 @@ public class CameraMovement : MonoBehaviour
         if (player == null)
             return;
         
-        //tracks the position of player and always mantains a distance equal to cameraDistance
+        //tracks the position of player and always maintains a distance equal to cameraDistance
         transform.position = new Vector3(player.position.x, player.position.y + cameraDistance, player.position.z);
     }
 }

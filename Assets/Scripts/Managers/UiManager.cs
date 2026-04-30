@@ -66,16 +66,20 @@ public class UiManager : MonoBehaviour
 
     private void ShowShieldBar()
     {
+        //when activating shield, shows shield bar and sets it automatically to full amount
         UpdateShieldBar(1f);
         shield.SetActive(true);
     }
 
+    //when collecting an ability pickup
     private void ChangeAbilityButton(bool status, AbilityType ability)
     {
+        //shows or hides button based on said ability
         switch (ability)
         {
             case AbilityType.Shield:
                 if (abilities.Length >= 2)
+                    //status can either be true or false depending on whether it is required to be shown or hidden
                     abilities[1].gameObject.SetActive(status);
                 break;
             
@@ -93,6 +97,7 @@ public class UiManager : MonoBehaviour
 
     private void DisableAbilityButton(IAbility ability)
     {
+        //disables ability button interaction when using said ability
         switch (ability)
         {
             case SpeedAbility:
@@ -119,6 +124,7 @@ public class UiManager : MonoBehaviour
 
     private void EnableAbilityButton(IAbility ability)
     {
+        //reactivates ability button interaction when cooldown ends for said ability
         switch (ability)
         {
             case SpeedAbility:
@@ -143,16 +149,19 @@ public class UiManager : MonoBehaviour
         }
     }
 
+    //deactivates shield bar
     private void HideShieldBar() => shield.SetActive(false);
 
     //fill amount is calculated beforehand and passed in parameter of function
     private void UpdateShieldBar(float shieldFill) => shieldBar.fillAmount = shieldFill;
-    
     private void UpdateHealthBar(float healthFill) => healthBar.fillAmount = healthFill;
 
+    //activates pause panel
     private void ShowPauseMenu() => pauseMenu.SetActive(true);
     
+    //deactivates pause panel
     private void HidePauseMenu() => pauseMenu.SetActive(false);
 
+    //activates end game panel
     private void ShowGameEndMenu() => gameEndMenu.SetActive(true);
 }
