@@ -39,7 +39,7 @@ public class PoolManager : MonoBehaviour
         }
 
         //if no deactivated bullets are present, then instantiates a new bullet
-        GameObject instancedObj = Instantiate(prefab, position, Quaternion.identity, storedBullets.transform);
+        GameObject instancedObj = Instantiate(prefab, position, rotation, storedBullets.transform);
         //adds bullet to the pool list
         pool.Add(instancedObj);
         //returns instantiated bullet

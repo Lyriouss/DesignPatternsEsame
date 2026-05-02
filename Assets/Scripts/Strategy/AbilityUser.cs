@@ -5,7 +5,6 @@ using UnityEngine.InputSystem;
 
 public class AbilityUser : MonoBehaviour
 {
-    public static AbilityUser Instance;
     private IAbility ability;
     
     public static float speedDuration;
@@ -25,16 +24,6 @@ public class AbilityUser : MonoBehaviour
     
     public static event Action<IAbility> onAbilityUsed;
     public static event Action<IAbility> onAbilityUsable;
-
-    private void Awake()
-    {
-        if (Instance != null)
-        {
-            Destroy(Instance);
-            return;
-        }
-        Instance = this;
-    }
     
     private void OnEnable()
     {

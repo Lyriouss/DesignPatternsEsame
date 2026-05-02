@@ -24,7 +24,7 @@ public class Bullet : MonoBehaviour
     private void FixedUpdate()
     {
         //moves bullet forward at a constant speed
-        Vector3 bulletMovement = transform.forward * speed * Time.fixedDeltaTime;
+        Vector3 bulletMovement = transform.forward * (speed * Time.fixedDeltaTime);
         rb.MovePosition(rb.position + bulletMovement);
 
         CheckDistance();
@@ -44,6 +44,10 @@ public class Bullet : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        //doesn't do anything when colliding with enemy
+        if (other.CompareTag("Enemy"))
+            return;
+        
         //runs only if object that triggers function has Player tag
         if (other.CompareTag("Player"))
         {
@@ -52,9 +56,9 @@ public class Bullet : MonoBehaviour
 
             //player takes damage
             pDamageable.TakeDamage(damage);
-            
-            //deactivates bullet colliding with player
-            gameObject.SetActive(false);
         }
+        
+        //deactivates bullet colliding with any object other than enemy
+        gameObject.SetActive(false);
     }
 }

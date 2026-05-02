@@ -36,10 +36,10 @@ public class PlayerMovement : MonoBehaviour
         //if speed ability is active
         if (speedAbilityActive)
             //calculates movement with double speed
-            movement = movementCorrection * speed * 2 * Time.fixedDeltaTime;
+            movement = movementCorrection * (speed * 2 * Time.fixedDeltaTime);
         else
             //else calculates movement normally
-            movement = movementCorrection * speed * Time.fixedDeltaTime;
+            movement = movementCorrection * (speed * Time.fixedDeltaTime);
 
         //moves player
         rb.MovePosition(rb.position + movement);

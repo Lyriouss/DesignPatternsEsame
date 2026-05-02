@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,6 +7,7 @@ public class UiManager : MonoBehaviour
     [SerializeField] private GameObject shield;
     [SerializeField] private Image shieldBar;
     [SerializeField] private Button[] abilities;
+    [SerializeField] private Button pauseButton;
 
     [SerializeField] private GameObject pauseMenu;
     [SerializeField] private GameObject gameEndMenu;
@@ -157,11 +157,23 @@ public class UiManager : MonoBehaviour
     private void UpdateHealthBar(float healthFill) => healthBar.fillAmount = healthFill;
 
     //activates pause panel
-    private void ShowPauseMenu() => pauseMenu.SetActive(true);
+    private void ShowPauseMenu()
+    {
+        pauseMenu.SetActive(true);
+        pauseButton.gameObject.SetActive(false);
+    } 
     
     //deactivates pause panel
-    private void HidePauseMenu() => pauseMenu.SetActive(false);
+    private void HidePauseMenu()
+    {
+        pauseMenu.SetActive(false);
+        pauseButton.gameObject.SetActive(true);
+    } 
 
     //activates end game panel
-    private void ShowGameEndMenu() => gameEndMenu.SetActive(true);
+    private void ShowGameEndMenu()
+    {
+        gameEndMenu.SetActive(true);
+        pauseButton.gameObject.SetActive(false);
+    } 
 }

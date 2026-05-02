@@ -1,11 +1,13 @@
 using System;
 using UnityEngine;
-using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 public class Enemy : MonoBehaviour, IDamageable
 {
-    [SerializeField] private LayerMask playerMask;
     private PoolManager poolManager;
+    [SerializeField] private LayerMask playerMask;
+
+    [SerializeField] private Image healthBar;
     
     public static float enemyMaxHealth;
     private float currentHealth;
@@ -21,13 +23,14 @@ public class Enemy : MonoBehaviour, IDamageable
     private void Awake()
     {
         //goes through hierarchy to find object with PoolManager script
-        poolManager = FindObjectOfType<PoolManager>();
+        poolManager = FindAnyObjectByType<PoolManager>();
     }
 
     private void Start()
     {
         //sets enemy health to max
         currentHealth = enemyMaxHealth;
+        healthBar.fillAmount = 1f;
     }
 
     private void Update()
@@ -88,6 +91,8 @@ public class Enemy : MonoBehaviour, IDamageable
     {
         //enemy takes damage
         currentHealth -= damage;
+        //updates enemy health bar
+        healthBar.fillAmount = currentHealth / enemyMaxHealth;
         
         //when enemy health reaches zero
         if (currentHealth <= 0f)
